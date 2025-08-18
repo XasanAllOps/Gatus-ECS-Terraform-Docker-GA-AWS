@@ -42,8 +42,8 @@ resource "aws_ecs_task_definition" "gatus_ecs_task" {
   network_mode             = "awsvpc"
   cpu                      = 256
   memory                   = 512
-  execution_role_arn       = var.ecs_execution_role_arn # output => iam module
-  task_role_arn            = var.ecs_task_role_arn      # output => iam module
+  execution_role_arn       = var.ecs_execution_role_arn
+  task_role_arn            = var.ecs_task_role_arn      
 
   container_definitions = jsonencode([
     {
@@ -89,13 +89,13 @@ resource "aws_ecs_service" "gatus_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = var.private_subnets # output => vpc module
+    subnets          = var.private_subnets
     assign_public_ip = true
     security_groups  = [aws_security_group.ecs_service.id]
   }
 
   load_balancer {
-    target_group_arn = var.target_group_alb_arn # output => alb module
+    target_group_arn = var.target_group_alb_arn
     container_name   = var.container_name
     container_port   = var.container_port
   }

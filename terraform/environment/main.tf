@@ -28,6 +28,7 @@ module "iam" {
 
 module "ecs" {
   source             = "./modules/ecs"
+  
   environment        = var.environment
   container_insights = true
   container_image    = var.container_image

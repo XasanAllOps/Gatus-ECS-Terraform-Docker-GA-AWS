@@ -1,0 +1,13 @@
+name: 
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - # exact folder
+
+env:
+
+jobs:
+  
