@@ -1,6 +1,9 @@
 ### In progress - End to End DevOps Project!
 
-1. application ✅
-2. terraform ✅
-3. dockerfile ✅
-4. github actions ⏳
+1. Application ✅
+2. Terraform ✅
+3. Dockerfile ✅
+4. Github action workflows ⏱️
+5. Add image scannning ⏳
+6. Backend for Terraform state ⏳
+7. ACM for security ⏳
