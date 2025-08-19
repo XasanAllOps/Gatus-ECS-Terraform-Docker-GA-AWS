@@ -33,6 +33,7 @@ module "ecs" {
   container_insights = true
   container_image    = var.container_image
   ecs_service_name   = var.ecs_service_name
+  container_image = var.container_image
   # -- outputs -- #
   vpc_id                 = module.iam.vpc_id
   private_subnets        = module.vpc.private_subnets
