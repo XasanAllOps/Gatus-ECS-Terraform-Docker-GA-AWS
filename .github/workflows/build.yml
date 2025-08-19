@@ -55,7 +55,7 @@ jobs:
           if curl --fail http://localhost:8080 > /dev/null; then
             echo "I am responding well 🎉"
           else
-            echo "I can't here you buddy! 🥺" && exit 1
+            echo "I can't hear you buddy! 🥺" && exit 1
           fi
           docker stop gatus-app
 
