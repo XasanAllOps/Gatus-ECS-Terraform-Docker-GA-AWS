@@ -1,12 +1,12 @@
-name: build, test image.
+# name: build, test image.
 
-on:
-  push:
-    branches:
-      - master
-    paths:
-      - 'application/**'
-      - '.github/workflows/**'
+# on:
+#   push:
+#     branches:
+#       - master
+#     paths:
+#       - 'application/**'
+#       - '.github/workflows/**'
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
