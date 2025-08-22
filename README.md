@@ -1,7 +1,7 @@
-[![CLOUD](https://custom-icon-badges.demolab.com/badge/Cloud-%23FF9900.svg?logo=aws&logoColor=BLACK)](#)
-[![Terraform](https://img.shields.io/badge/Terraform-844FBA?logo=terraform&logoColor=black)](#)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=black)](#)
-[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-c1121f?logo=github-actions&logoColor=black)](#)
+[![CLOUD](https://custom-icon-badges.demolab.com/badge/Cloud-e09f3e.svg?logo=aws&logoColor=black)](#)
+[![Terraform](https://img.shields.io/badge/Terraform-003049?logo=terraform&logoColor=black)](#)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=navy)](#)
+[![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-780000?logo=github-actions&logoColor=gold)](#)
 
 ### In progress - End to End DevOps Project!
 
