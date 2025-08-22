@@ -97,6 +97,6 @@ resource "aws_ecs_service" "gatus_service" {
   load_balancer {
     target_group_arn = var.target_group_alb_arn
     container_name   = var.container_name
-    container_port   = var.container_port
+    container_port   = 8080
   }
 }

@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "./modules/network"
+  source = "../modules/network"
 
   environment         = var.environment
   vpc_cidr            = var.vpc_cidr
@@ -9,7 +9,7 @@ module "vpc" {
 }
 
 module "alb" {
-  source = "./modules/loadbalancer"
+  source = "../modules/loadbalancer"
 
   environment       = var.environment
   alb_security_name = var.alb_security_name
@@ -21,13 +21,13 @@ module "alb" {
 }
 
 module "iam" {
-  source = "./modules/iam"
+  source = "../modules/iam"
 
   environment = var.environment
 }
 
 module "ecs" {
-  source = "./modules/ecs"
+  source = "../modules/ecs"
 
   environment        = var.environment
   container_insights = true
@@ -36,7 +36,7 @@ module "ecs" {
   task_family_name   = var.task_family_name
   # -- outputs -- #
   region                 = var.region
-  vpc_id                 = module.iam.vpc_id
+  vpc_id                 = module.vpc.vpc_id
   private_subnets        = module.vpc.private_subnets
   target_group_alb_arn   = module.alb.alb_target_group_arn
   alb_security_group     = module.alb.alb_security_group

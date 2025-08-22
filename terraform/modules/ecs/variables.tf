@@ -1,4 +1,8 @@
 # --- output related variables --- #
+variable "vpc_id" {
+  type = string
+}
+
 variable "alb_security_group" {
   type = string
 }
@@ -15,11 +19,7 @@ variable "ecs_task_role_arn" {
   type = string
 }
 
-variable "vpc_id" {
-  type = string
-}
-
-variable "private_subnet" {
+variable "private_subnets" {
   type = list(string)
 }
 
