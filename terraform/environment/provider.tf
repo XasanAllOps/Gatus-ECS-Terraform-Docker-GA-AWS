@@ -9,10 +9,10 @@ terraform {
 
 terraform {
   backend "s3" {
-    bucket         = "gatus"
+    bucket         = "ecs-gatus-app"
     key            = "ecs/tf.tfstate"
-    region         = "eu-west-1"
+    region         = var.region
     encrypt        = true
-    dynamodb_table = "state-lock"
+    dynamodb_table = "state-lock-gatus"
   }
 }
