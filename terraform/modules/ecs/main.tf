@@ -72,7 +72,7 @@ resource "aws_ecs_task_definition" "gatus_ecs_task" {
       log_configuration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/${var.ecs_task_family_name}"
+          awslogs-group         = "/ecs/${var.task_family_name}"
           awslogs-region        = var.region
           awslogs-stream-prefix = "ecs"
         }

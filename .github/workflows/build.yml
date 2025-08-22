@@ -10,6 +10,7 @@
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REPO: gatus-app
 
 jobs:
   build-push:
@@ -29,9 +30,14 @@ jobs:
       - name: login to ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: build docker image
+      - name: ecr_uri creation
+        id: ecr
         run: |
-          docker build -t gatus ./application
+          ECR_URI=$(aws ecr describe-repositories --repository-names $ECR_REPO --query 'repositories[0].repositoryUri' --output text)
+          echo "ECR_URI=$ECR_URI" >> $GITHUB_ENV
+
+      - name: build docker image
+        run: docker build -t gatus:latest ./application
 
       - name: security test image
         uses: aquasecurity/trivy-action@master
@@ -45,7 +51,7 @@ jobs:
       
       - name: test gatus container
         run: |
-          docker run -dit --rm --name gatus-app -p 8080:8080 gatus
+          docker run -d --rm --name gatus-app -p 8080:8080 gatus:latest
           sleep 10
           if [ "$(docker ps -q -f name=gatus-app)" ]; then
             echo "Up & running 🚀"
@@ -61,4 +67,8 @@ jobs:
 
       - name: tag docker container
         run: |
-          docker tag gatus:latest ${{ secrets.ECR_REPO }}:latest
+          docker tag gatus:latest $ECR_URI:latest
+
+      - name: push docker image to ECR
+        run: | 
+          docker push $ECR_URI:latest
