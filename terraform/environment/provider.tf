@@ -11,7 +11,7 @@ terraform {
   backend "s3" {
     bucket         = "ecs-gatus-app"
     key            = "ecs/tf.tfstate"
-    region         = var.region
+    region         = "eu-west-1"
     encrypt        = true
     dynamodb_table = "state-lock-gatus"
   }
