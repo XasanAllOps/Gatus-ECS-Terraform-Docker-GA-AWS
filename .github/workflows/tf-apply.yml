@@ -6,6 +6,7 @@ on:
 env:
   IMAGE_TAG: latest
   AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REPO: gatus-app
 
 jobs:
   tf-apply:
