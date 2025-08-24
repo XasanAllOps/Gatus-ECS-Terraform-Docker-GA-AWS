@@ -1,4 +1,4 @@
-name: terraform plan
+name: tfplan
 
 on:
   workflow_run:
