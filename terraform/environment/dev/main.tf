@@ -15,7 +15,7 @@ module "alb" {
   alb_security_name = var.alb_security_name
   target_group_name = var.target_group_name
   # -- outputs -- #
-  vpc_id         = module.vpc.public_subnets
+  vpc_id         = module.vpc.vpc_id
   public_subnets = module.vpc.public_subnets
   depends_on     = [module.vpc]
 }
