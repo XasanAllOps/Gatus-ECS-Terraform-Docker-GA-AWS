@@ -70,8 +70,4 @@ jobs:
       - name: terraform plan
         working-directory: ./terraform/environment/dev
         run: |
-          terraform plan \
-            -var="container_image=${{ env.IMAGE_URI }}"
-
-
-        
+          terraform plan -var="container_image=${{ env.IMAGE_URI }}"

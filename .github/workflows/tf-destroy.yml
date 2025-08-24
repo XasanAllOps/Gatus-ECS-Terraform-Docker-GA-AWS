@@ -1,0 +1,40 @@
+name: tfdestroy
+
+on: 
+  workflow_dispatch:
+    inputs:
+      ecr_uri:
+        description: 'ecr image uri'
+        required: true
+
+jobs:
+  tf-destroy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: terraform setup
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.8.0"
+          terraform_wrapper: false
+
+      - name: terraform init
+        working-directory: ./terraform/environment/dev
+        run: terraform init
+
+      - name: terraform destroy
+        working-directory: ./terraform/environment/dev
+        run: |
+          terraform destroy --auto-approve \
+            -target=module.vpc
+            -target=module.alb
+            -target=module.iam
+            -target=module.ecs
+            -var="container_image=${{ github.event.inputs.ecr_uri }}"
