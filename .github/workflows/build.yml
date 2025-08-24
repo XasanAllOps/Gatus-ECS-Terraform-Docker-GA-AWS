@@ -1,4 +1,4 @@
-name: build, test image.
+name: build & test image
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
       - name: login to ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: ecr_uri creation
+      - name: ecr uri
         id: ecr
         run: |
           ECR_URI=$(aws ecr describe-repositories --repository-names $ECR_REPO --query 'repositories[0].repositoryUri' --output text)

@@ -1,0 +1,74 @@
+name: terraform plan
+
+on:
+  workflow_run:
+    workflows: ["build & test image"]
+    types:
+      - completed
+
+env:
+  ECR_REPO: gatus-app
+
+jobs:
+  tf-plan:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: ecr uri
+        id: ecr
+        run: |
+          ECR_URI=$(aws ecr describe-repositories --repository-names $ECR_REPO --query 'repositories[0].repositoryUri' --output text)
+          echo "ECR_URI=$ECR_URI" >> $GITHUB_ENV
+          echo "IMAGE_URI=$ECR_URI:${IMAGE_TAG}" >> $GITHUB_ENV
+
+      - name: terraform setup
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.8.0"
+          terraform_wrapper: false
+
+      - name: terraform init
+        working-directory: ./terraform/environment/dev
+        run: terraform init
+
+      - name: terrafrom validate
+        working-directory: ./terraform/environment/dev
+        run: terraform validate
+      
+      - name: setup tflint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: latest
+
+      - name: run tflint
+        run: tflint --init && tflint
+        working-directory: ./terraform/environment/dev
+
+      - name: run tfsec
+        uses: aquasecurity/tfsec-action@v1
+        with:
+          working_directory: ./terraform/environment/dev
+          format: json
+          soft_fail: true
+
+      - name: terraform plan
+        working-directory: ./terraform/environment/dev
+        run: |
+          terraform plan \
+            -var="container_image=${{ env.IMAGE_URI }}"
+
+
+        
