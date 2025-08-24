@@ -39,8 +39,8 @@ jobs:
         working-directory: ./terraform/environment/dev
         run: |
           terraform destroy --auto-approve \
-            -target=module.vpc
-            -target=module.alb
-            -target=module.iam
-            -target=module.ecs
+            -target=module.vpc \
+            -target=module.alb \
+            -target=module.iam \
+            -target=module.ecs \
             -var="container_image=${{ github.event.inputs.ecr_uri }}"
