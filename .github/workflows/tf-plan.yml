@@ -5,13 +5,15 @@ on:
     workflows: ["build & test image"]
     types:
       - completed
+    
+  workflow_dispatch:
 
 env:
   ECR_REPO: gatus-app
 
 jobs:
   tf-plan:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     env:
       IMAGE_TAG: latest
