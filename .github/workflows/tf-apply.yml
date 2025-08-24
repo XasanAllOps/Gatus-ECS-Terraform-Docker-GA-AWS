@@ -38,6 +38,6 @@ jobs:
         run: terraform init
 
       - name: terraform apply
-        working-directory: ./terraform
+        working-directory: ./terraform/environment/dev
         run: |
           terraform apply -auto-approve -var="container_image=${{ env.IMAGE_URI }}"
