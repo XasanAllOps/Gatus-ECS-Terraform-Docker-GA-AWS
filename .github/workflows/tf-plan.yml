@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_TAG: latest
+      AWS_REGION: ${{ secrets.AWS_REGION }}
 
     steps:
       - name: Checkout
