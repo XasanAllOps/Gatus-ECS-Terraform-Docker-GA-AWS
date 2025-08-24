@@ -34,10 +34,10 @@ jobs:
           terraform_wrapper: false
 
       - name: terraform init
-        working-directory: ./terraform/environment/dev
+        working-directory: terraform/environment/dev
         run: terraform init
 
       - name: terraform apply
-        working-directory: ./terraform/environment/dev
+        working-directory: terraform/environment/dev
         run: |
           terraform apply -auto-approve -var="container_image=${{ env.IMAGE_URI }}"
