@@ -60,7 +60,7 @@ jobs:
         working-directory: ./terraform/environment/dev
 
       - name: run tfsec
-        uses: aquasecurity/tfsec-action@v1
+        uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: ./terraform/environment/dev
           format: json
