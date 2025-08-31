@@ -49,7 +49,7 @@ module "ecs" {
   source = "../../modules/ecs"
 
   environment        = var.environment
-  container_insights = true
+  container_insights = var.container_insights
   container_image    = var.container_image
   ecs_service_name   = var.ecs_service_name
   task_family_name   = var.task_family_name

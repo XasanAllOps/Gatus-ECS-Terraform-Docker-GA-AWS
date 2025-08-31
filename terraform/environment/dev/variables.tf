@@ -43,6 +43,11 @@ variable "container_image" {
   type = string
 }
 
+variable "container_insights" {
+  type = bool
+  default = true
+}
+
 variable "task_family_name" {
   type    = string
   default = "gatus-task"
