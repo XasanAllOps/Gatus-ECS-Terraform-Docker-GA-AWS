@@ -13,3 +13,7 @@
 6. GA Workflows - terraform-build ✅
 7. Create a README.md ⏱️
 8. Revisit and improve project ⏱️
+  - Added ACM ✅
+  - R53 ✅
+  - Create file called stage.tfvars, -var-file="stage.tfvars" & add file to .gitignore ⏳
+  - OIDC ⏳

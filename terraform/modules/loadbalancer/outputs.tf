@@ -9,3 +9,7 @@ output "alb_dns_name" {
 output "alb_security_group" {
   value = aws_security_group.alb.id
 }
+
+output "alb_zone_id" {
+  value = aws_lb.main.zone_id
+}

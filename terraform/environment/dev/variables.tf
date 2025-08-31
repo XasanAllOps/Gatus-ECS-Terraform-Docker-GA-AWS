@@ -52,3 +52,18 @@ variable "ecs_service_name" {
   type    = string
   default = "gatus-ecs-service"
 }
+
+variable "domain_name" {
+  type = string
+  default = "xasan.site"
+}
+
+variable "val_method" {
+  type = string
+  default = "DNS"
+}
+
+variable "target_health" {
+  type = bool
+  default = true
+}

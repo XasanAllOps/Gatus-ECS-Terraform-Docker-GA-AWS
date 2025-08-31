@@ -17,7 +17,26 @@ module "alb" {
   # -- outputs -- #
   vpc_id         = module.vpc.vpc_id
   public_subnets = module.vpc.public_subnets
+  certificate_arn = module.acm.certificate_arn
   depends_on     = [module.vpc]
+}
+
+module "acm" {
+  source = "../../modules/acm"
+
+  environment = var.environment
+  domain_name = var.domain_name
+  val_method = var.val_method
+}
+
+module "dns" {
+  source = "../../modules/dns"
+
+  domain_name = var.domain_name
+  target_health = var.target_health
+  # -- outputs -- #
+  alb_zone_id = module.alb.alb_zone_id
+  alb_dns_name = module.alb.alb_dns_name
 }
 
 module "iam" {

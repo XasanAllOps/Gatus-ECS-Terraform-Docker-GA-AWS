@@ -6,6 +6,10 @@ variable "public_subnets" {
   type = list(string)
 }
 
+variable "certificate_arn" {
+  type = string
+}
+
 # -- normal variables -- #
 variable "alb_security_name" {
   type = string
