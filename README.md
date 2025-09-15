@@ -19,3 +19,4 @@
   - Create file called stage.tfvars, -var-file="stage.tfvars" & add file to .gitignore ⏳
   - OIDC ⏳
   - Bolster security with AWS Shield + AWS WAF + AWS GuardDuty ⏱️
+  - Read an interesting article regarding using Nektos which allows me to run my GA locally 🎉
