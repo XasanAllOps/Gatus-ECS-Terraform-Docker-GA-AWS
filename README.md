@@ -15,5 +15,7 @@
 8. Revisit and improve project ⏱️
   - Added ACM ✅
   - R53 ✅
+  - S3 [Best practice to create bucket outside Terraform via aws cli! It includes versioning, encryption + public access blocked]. Originally used DynamoDB for state locking now switced over to native s3 locking ✅ 
   - Create file called stage.tfvars, -var-file="stage.tfvars" & add file to .gitignore ⏳
   - OIDC ⏳
+  - Bolster security with AWS Shield + AWS WAF + AWS GuardDuty ⏱️
