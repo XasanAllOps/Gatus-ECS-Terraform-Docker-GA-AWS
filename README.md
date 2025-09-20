@@ -76,7 +76,7 @@ The backend is secured using server-side encryption, versioning (to allow state 
 
 Deployment is fully automated using GitHub Actions. Each workflow handles a distinct part of the lifecycle:
 
-- `build.yml` builds and pushes Docker images to Amazon ECR with pinned tags for reproducibility.
+- `build.yml` builds and pushes Docker images to Amazon ECR.
 
 - `tf-plan.yml` runs terraform plan to preview infrastructure changes.
 
@@ -85,3 +85,15 @@ Deployment is fully automated using GitHub Actions. Each workflow handles a dist
 - `tf-destroy.yml` is available for controlled teardown of resources.
 
 As part of the pipeline, Docker images are scanned with [Trivy](https://trivy.dev/latest/docs/) to detect vulnerabilities, and Terraform code is validated with tfsec and TFLint to enforce security best practices and catch potential issues early. This results in repeatable, versioned, and secure deployments with a clear audit trail.
+
+
+## Technologies Used
+
+| Category               | Services & Tools|
+|------------------------|-----------------|
+| Cloud                  | AWS             |
+| Infrastructure as Code | Terraform       |
+| CI/CD                  | GitHub Actions  |
+| Containerization       | Docker          |
+| Security Scanning      | Trivy           |
+| Linting / Validation   | tflint & tfsec  |
