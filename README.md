@@ -11,13 +11,36 @@ This project deploys [Gatus](https://github.com/TwiN/gatus), a developer-oriente
 
 ## Architecture Overview
 
-After evaluating the trade-offs between high availability  and cost optimization architectural approaches, we chose a [high-availability design](https://aws.amazon.com/blogs/networking-and-content-delivery/using-nat-gateways-with-multiple-amazon-vpcs-at-scale/) to ensure the environment is production-ready. For example, we deployed NAT Gateways in each Availability Zone to avoid a single point of failure (SPOF). The architecture runs in a VPC across two Availability Zones with public and private subnets for resource isolation, and the custom domain `xasan.site` is managed via route 53 hosted zone. An Application Load Balancer (ALB) distributes traffic to ECS Fargate tasks in private subnets, enforces HTTP → HTTPS redirection, and secures traffic with ACM-managed TLS certificates Infrastructure is fully automated using Terraform and GitHub Actions, with pinned versions for stability, Docker images scanned via Trivy,an open-source vulnerability scanner for containers, and Terraform code is validated with tfsec, an open-source static analysis tool designed to identify potential security vulnerabilities, and TFLint, an open-source Terraform linter designed to detect errors and enforce Terraform best practices.
+After evaluating the trade-offs between high availability  and cost optimization architectural approaches, we chose a [high-availability design](https://aws.amazon.com/blogs/networking-and-content-delivery/using-nat-gateways-with-multiple-amazon-vpcs-at-scale/) to ensure the environment is production-ready. For example, we deployed NAT Gateways in each Availability Zone to avoid a single point of failure (SPOF). The architecture runs in a VPC across two Availability Zones with public and private subnets for resource isolation, and the custom domain `xasan.site` is managed via route 53 hosted zone. An Application Load Balancer (ALB) distributes traffic to ECS Fargate tasks in private subnets, enforces HTTP → HTTPS redirection, and secures traffic with ACM-managed TLS certificates. Infrastructure is fully automated using Terraform and GitHub Actions, with pinned versions for stability, Docker images scanned via Trivy, an open-source vulnerability scanner for containers, and Terraform code is validated with tfsec, an open-source static analysis tool designed to identify potential security vulnerabilities, and TFLint, an open-source Terraform linter designed to detect errors and enforce Terraform best practices.
 
 ## Architecture Diagram
 
 ![image](./images/architecture.png)
 
-# Terraform Structure
+## Key Features
+
+- High-availability architecture across multiple Availability Zones
+- ECS Fargate for serverless container orchestration
+- Application Load Balancer with HTTP → HTTPS redirection
+- ACM-managed TLS certificates for secure traffic
+- Custom domain `xasan.site` via Route 53
+- Modular Terraform setup for repeatable infrastructure
+- Fully automated CI/CD with GitHub Actions
+- Docker images built, versioned, and scanned with Trivy
+- Terraform code validated with tfsec and TFLint
+
+## Technologies Used
+
+| Category               | Services & Tools                         |
+|------------------------|------------------------------------------|
+| Cloud                  | AWS (VPC, R53, ALB, ECR, ECS, ACM, IAM)  |
+| Infrastructure as Code | Terraform                                |
+| CI/CD                  | GitHub Actions                           |
+| Containerization       | Docker                                   |
+| Security Scanning      | Trivy (Docker) & tfsec (Terraform)       |
+| Linting                | TFLint                                   |
+
+## Terraform Structure
 
 ```
 gatus-ecs-app/
@@ -84,16 +107,13 @@ Deployment is fully automated using GitHub Actions. Each workflow handles a dist
 
 - `tf-destroy.yml` is available for controlled teardown of resources.
 
-As part of the pipeline, Docker images are scanned with [Trivy](https://trivy.dev/latest/docs/) to detect vulnerabilities, and Terraform code is validated with tfsec and TFLint to enforce security best practices and catch potential issues early. This results in repeatable, versioned, and secure deployments with a clear audit trail.
+As part of the pipeline, Docker images are scanned with [Trivy](https://trivy.dev/latest/docs/) to detect vulnerabilities, and Terraform code is validated with tfsec and tflint to enforce security best practices and catch potential issues early. This results in repeatable, versioned, and secure deployments with a clear audit trail.
 
+## Future Improvements
 
-## Technologies Used
-
-| Category               | Services & Tools|
-|------------------------|-----------------|
-| Cloud                  | AWS             |
-| Infrastructure as Code | Terraform       |
-| CI/CD                  | GitHub Actions  |
-| Containerization       | Docker          |
-| Security Scanning      | Trivy           |
-| Linting / Validation   | tflint & tfsec  |
+- OIDC to manage secrets and reduce the risk stored secrets being exposed via Github Actions
+- As the application scales, we will look to add AWS WAF to protect ALB endpoints from common attacks and reduce latency with CDN for edge users.
+- Utilise VPC Endpoints where needed for cost optimization
+- Configure an alert system for failed tasks with SNS & auditing and anomaly detection with CloudTrail + GuardDuty
+- Brush up my Terraform configuration and include a stage.tfvars as an option.
+- Observability with the additon of CloudWatch Metrics or integrate Prometheus/Grafana.
