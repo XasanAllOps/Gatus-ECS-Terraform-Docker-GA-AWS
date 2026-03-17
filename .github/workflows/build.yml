@@ -41,6 +41,7 @@ jobs:
         with:
           image-ref: gatus:latest
           format: table
+          version: v0.69.2
           exit-code: '0'
           ignore-unfixed: true
           vuln-type: os,library
