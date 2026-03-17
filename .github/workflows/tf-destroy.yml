@@ -1,46 +1,67 @@
-name: tfdestroy
+name: Destroy Infrastructure
 
-on: 
+on:
   workflow_dispatch:
     inputs:
-      ecr_uri:
-        description: 'ecr image uri'
+      confirm_destroy:
+        description: 'Safety Check: Type "destroy" to confirm teardown'
         required: true
+        type: string
+
+concurrency:
+  group: "deploy-infrastructure" 
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
 
 env:
-  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  WORKING_DIR: ./terraform/environment/dev
 
 jobs:
-  tf-destroy:
+  teardown-infrastructure:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout code
+      - name: safety lock
+        run: |
+          if [ "${{ github.event.inputs.confirm_destroy }}" != "destroy" ]; then
+            echo "ERROR ✋🏽: You did not type 'destroy'. Infrastructure is safe."
+            exit 1
+          fi
+          echo "Teardown confirmed. Proceeding...⏳"
+
+      - name: checkout repository 
         uses: actions/checkout@v4
 
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v3
+      - name: configure AWS credentials w/ OIDC
+        uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_INFRA_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: terraform setup
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
         with:
-          terraform_version: "1.8.0"
-          terraform_wrapper: false
+          terraform_version: "1.14.7"
 
       - name: terraform init
-        working-directory: ./terraform/environment/dev
-        run: terraform init
+        working-directory: ${{ env.WORKING_DIR }}
+        run: terraform init -input=false
 
-      - name: terraform destroy
-        working-directory: ./terraform/environment/dev
+      - name: 🗑️ terraform destroy
+        working-directory: ${{ env.WORKING_DIR }}
+        run: terraform destroy --auto-approve -input=false -var="container_image=teardown-placeholder"
+
+      - name: final status dashboard
+        if: always()
         run: |
-          terraform destroy --auto-approve \
-            -target=module.vpc \
-            -target=module.alb \
-            -target=module.iam \
-            -target=module.ecs \
-            -var="container_image=${{ github.event.inputs.ecr_uri }}"
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "Teardown Successful ✅" >> $GITHUB_STEP_SUMMARY
+            echo "All AWS resources have been cleanly deleted" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Teardown Failed!" >> $GITHUB_STEP_SUMMARY
+            echo "Check the Terraform logs above. Some resources might still be running in AWS which may require manual deletion." >> $GITHUB_STEP_SUMMARY
+          fi

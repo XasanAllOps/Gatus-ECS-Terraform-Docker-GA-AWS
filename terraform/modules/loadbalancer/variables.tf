@@ -1,4 +1,4 @@
-# -- output related variables -- #
+# -- module (root) related variables -- #
 variable "vpc_id" {
   type = string
 }
@@ -21,4 +21,8 @@ variable "environment" {
 
 variable "target_group_name" {
   type = string
+}
+
+variable "container_port" {
+  type = number
 }

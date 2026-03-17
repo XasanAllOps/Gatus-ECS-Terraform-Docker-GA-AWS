@@ -1,4 +1,4 @@
-name: build & test image
+name: build & push docker image to ecr
 
 on:
   push:
@@ -8,39 +8,36 @@ on:
       - 'application/**'
       - '.github/workflows/**'
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
-  AWS_REGION: ${{ secrets.AWS_REGION }}
-  ECR_REPO: gatus-app
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
 
 jobs:
   build-push:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
+      - name: checkout repository 
         uses: actions/checkout@v4
 
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v3
+      - name: Configure AWS credentials w/ OIDC
+        uses: aws-actions/configure-aws-credentials@v4.1.0
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_APP_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: login to ECR
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: ecr uri
-        id: ecr
-        run: |
-          ECR_URI=$(aws ecr describe-repositories --repository-names $ECR_REPO --query 'repositories[0].repositoryUri' --output text)
-          echo "ECR_URI=$ECR_URI" >> $GITHUB_ENV
+      
+      - name: login to ecr
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v4
 
       - name: build docker image
         run: docker build -t gatus:latest ./application
 
       - name: security test image
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           image-ref: gatus:latest
           format: table
@@ -49,26 +46,26 @@ jobs:
           vuln-type: os,library
           severity: CRITICAL,HIGH
       
-      - name: test gatus container
+      - name: test locally
         run: |
           docker run -d --rm --name gatus-app -p 8080:8080 gatus:latest
           sleep 10
           if [ "$(docker ps -q -f name=gatus-app)" ]; then
-            echo "Up & running 🚀"
+            echo "Up & running ✅"
           else
-            echo "Oh No! It failed 🚨" && exit 1
+            echo "Failed 🚨" && exit 1
           fi
           if curl --fail http://localhost:8080 > /dev/null; then
-            echo "I am responding well 🎉"
+            echo "Responding well 🎉"
           else
-            echo "I can't hear you buddy! 🥺" && exit 1
+            echo "I can't hear you buddy 🚨" && exit 1
           fi
           docker stop gatus-app
 
-      - name: tag docker container
+      - name: tag & push docker image to ecr
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
         run: |
-          docker tag gatus:latest $ECR_URI:latest
-
-      - name: push docker image to ECR
-        run: | 
-          docker push $ECR_URI:latest
+          docker tag gatus:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest

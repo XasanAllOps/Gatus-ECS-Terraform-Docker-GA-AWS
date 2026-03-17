@@ -1,11 +1,26 @@
-# -- Pinned version (v5.22.0) for consistency, best practice.
-FROM twinproduction/gatus:v5.23.2
+FROM golang:1.26.1-alpine AS builder
 
-# -- Copy config files over
+RUN apk update && apk add --no-cache ca-certificates tzdata
+
+RUN addgroup -S appgroup && adduser -S nonrootuser -G appgroup
+
+RUN CGO_ENABLED=0 GOOS=linux go install -trimpath -ldflags="-w -s" github.com/TwiN/gatus/v5@v5.22.0
+
+FROM scratch
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/group /etc/group
+
+COPY --from=builder /go/bin/gatus /gatus
+
 COPY ./config/config.yaml /config/config.yaml
 
-# -- Instruct Gatus where to find it
+USER nonrootuser
+
 ENV GATUS_CONFIG_PATH=/config/config.yaml
 
-# -- Expose Gatus Port
 EXPOSE 8080
+
+ENTRYPOINT [ "/gatus" ]

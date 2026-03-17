@@ -1,8 +1,12 @@
-variable "domain_name" {
+# -- normal variables -- #
+variable "record_name" {
+  type = string
+}
+variable "zone_name" {
   type = string
 }
 
-variable "val_method" {
+variable "validation_method" {
   type = string
   default = "DNS"
 }

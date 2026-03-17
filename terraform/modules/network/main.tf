@@ -1,6 +1,19 @@
 # -- CHILD NETWORK MODULE 🔑 --
 
 #-- PUBLIC 🟩 🌍 --#
+data "aws_availability_zones" "available" {
+  state = "available"
+
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
+}
+
+locals {
+  azs        = slice(data.aws_availability_zones.available.names, 0, min(3, length(data.aws_availability_zones.available.names)))
+  az_mapping = { for idx, az in local.azs : az => idx }
+}
 
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr
@@ -17,16 +30,15 @@ resource "aws_internet_gateway" "main" {
   }
 }
 
-
 resource "aws_subnet" "public" {
-  count                   = length(var.azs)
+  for_each                = local.az_mapping
+  availability_zone       = each.key
   vpc_id                  = aws_vpc.main.id
-  availability_zone       = var.azs[count.index]
-  cidr_block              = var.public_subnet_cidr[count.index]
+  cidr_block              = cidrsubnet(var.vpc_cidr, 8, each.value + 1)
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "public-subnet #${count.index + 1}"
+    Name = "public-subnet #${each.key}"
   }
 }
 
@@ -44,54 +56,44 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  count          = length(var.azs)
-  subnet_id      = aws_subnet.public[count.index].id
+  for_each = aws_subnet.public
+  subnet_id      = each.value.id
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_eip" "nat_gateway" {
-  count      = length(var.azs)
-  domain     = "vpc"
-  depends_on = [aws_internet_gateway.main]
-
-  tags = {
-    Name = "nat-gateway-${count.index + 1}"
-  }
-}
-
 resource "aws_nat_gateway" "main" {
-  count         = length(var.azs)
-  allocation_id = aws_eip.nat_gateway[count.index].id
-  subnet_id     = aws_subnet.public[count.index].id
+  availability_mode = "regional"
+  vpc_id            = aws_vpc.main.id
+  depends_on = [aws_internet_gateway.main]
 }
 
 #-- PRIVATE 🟦 🔐 --#
-
 resource "aws_subnet" "private" {
-  count             = length(var.azs)
+  for_each          = local.az_mapping
   vpc_id            = aws_vpc.main.id
-  cidr_block        = var.private_subnet_cidr[count.index]
-  availability_zone = var.azs[count.index]
+  cidr_block        = cidrsubnet(var.vpc_cidr, 8, each.value + 10)
+  availability_zone = each.key
 
   tags = {
-    Name = "private-subnet #${count.index + 1}"
+    Name = "private-subnet #${each.key}"
   }
 }
 
 resource "aws_route_table" "private" {
-  count  = length(var.azs)
   vpc_id = aws_vpc.main.id
+
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main[count.index].id
+    nat_gateway_id = aws_nat_gateway.main.id
   }
+
   tags = {
     Name = "(${var.environment}): private-route-table"
   }
 }
 
 resource "aws_route_table_association" "private" {
-  count          = length(var.azs)
-  subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.private[count.index].id
+  for_each = aws_subnet.private
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.private.id
 }

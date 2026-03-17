@@ -1,6 +1,8 @@
 resource "aws_acm_certificate" "main" {
-  domain_name = var.domain_name
-  validation_method = var.val_method
+  domain_name = var.record_name
+  validation_method = var.validation_method
+
+  subject_alternative_names = ["*.${var.zone_name}"]
 
   lifecycle {
     create_before_destroy = true
@@ -12,7 +14,8 @@ resource "aws_acm_certificate" "main" {
 }
 
 data "aws_route53_zone" "main" {
-  name = var.domain_name
+  name = var.zone_name
+  private_zone = false
 }
 
 resource "aws_route53_record" "cert_val" {

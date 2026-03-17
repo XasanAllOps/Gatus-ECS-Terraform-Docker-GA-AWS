@@ -16,7 +16,6 @@ resource "aws_security_group" "ecs_service" {
   }
 }
 
-
 resource "aws_ecs_cluster" "main" {
   name = "${var.environment}-cluster"
   setting {
@@ -36,12 +35,17 @@ resource "aws_ecs_cluster_capacity_providers" "gatus_fargate" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "main" {
+  name = "/ecs/${var.task_family_name}"
+  retention_in_days = var.retention_in_days
+}
+
 resource "aws_ecs_task_definition" "gatus_ecs_task" {
   family                   = var.task_family_name
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = 256
-  memory                   = 512
+  cpu                      = var.task_level_cpu
+  memory                   = var.task_level_memory
   execution_role_arn       = var.ecs_execution_role_arn
   task_role_arn            = var.ecs_task_role_arn      
 
@@ -49,13 +53,13 @@ resource "aws_ecs_task_definition" "gatus_ecs_task" {
     {
       name      = var.container_name
       image     = var.container_image
-      cpu       = 256
-      memory    = 512
+      cpu       = var.container_level_cpu
+      memory    = var.container_level_memory
       essential = true
       portMappings = [
         {
-          containerPort = 8080
-          hostPort      = 8080
+          containerPort = var.container_port
+          hostPort      = var. host_port
           protocol      = "tcp"
         }
       ],
@@ -72,9 +76,9 @@ resource "aws_ecs_task_definition" "gatus_ecs_task" {
       log_configuration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/${var.task_family_name}"
+          awslogs-group         = var.task_cloudwatch_logs
           awslogs-region        = var.region
-          awslogs-stream-prefix = "ecs"
+          awslogs-stream-prefix = var.task_family_name
         }
       }
     }
@@ -85,18 +89,17 @@ resource "aws_ecs_service" "gatus_service" {
   name            = var.ecs_service_name
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.gatus_ecs_task.arn
-  desired_count   = 2
+  desired_count   = var.desired_count
   launch_type     = "FARGATE"
 
   network_configuration {
     subnets          = var.private_subnets
-    assign_public_ip = true
     security_groups  = [aws_security_group.ecs_service.id]
   }
 
   load_balancer {
     target_group_arn = var.target_group_alb_arn
     container_name   = var.container_name
-    container_port   = 8080
+    container_port   = var.container_port
   }
 }

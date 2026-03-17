@@ -1,42 +1,21 @@
-
 variable "environment" {
-  type    = string
-  default = "stage"
+  type = string
 }
 
 variable "vpc_cidr" {
-  type    = string
-  default = "10.0.0.0/16"
+  type = string
 }
 
 variable "region" {
-  type    = string
-  default = "eu-west-1"
-}
-
-variable "azs" {
-  type    = list(string)
-  default = ["eu-west-1a", "eu-west-1b"]
-}
-
-variable "public_subnet_cidr" {
-  type    = list(string)
-  default = ["10.0.1.0/24", "10.0.2.0/24"]
-}
-
-variable "private_subnet_cidr" {
-  type    = list(string)
-  default = ["10.0.3.0/24", "10.0.4.0/24"]
+  type = string
 }
 
 variable "alb_security_name" {
-  type    = string
-  default = "alb-security"
+  type = string
 }
 
 variable "target_group_name" {
-  type    = string
-  default = "gatus-target-group"
+  type = string
 }
 
 variable "container_image" {
@@ -45,30 +24,69 @@ variable "container_image" {
 
 variable "container_insights" {
   type = bool
-  default = true
 }
 
 variable "task_family_name" {
-  type    = string
-  default = "gatus-task"
+  type = string
+}
+
+variable "retention_in_days" {
+  type    = number
+  default = 5
+}
+
+variable "task_level_cpu" {
+  type = number
+}
+variable "task_level_memory" {
+  type = number
+}
+
+variable "container_level_cpu" {
+  type = number
+}
+variable "container_level_memory" {
+  type = number
+}
+
+variable "container_port" {
+  type = number
+}
+variable "host_port" {
+  type = number
+}
+
+variable "task_cloudwatch_logs" {
+  type = string
 }
 
 variable "ecs_service_name" {
-  type    = string
-  default = "gatus-ecs-service"
+  type = string
+}
+
+variable "desired_count" {
+  type = number
 }
 
 variable "domain_name" {
-  type = string
+  type    = string
   default = "xasan.site"
 }
 
-variable "val_method" {
+variable "zone_name" {
+  type    = string
+  default = "xasan.site"
+}
+
+variable "record_name" {
+  type    = string
+  default = "xasan.site"
+}
+
+variable "validation_method" {
   type = string
-  default = "DNS"
 }
 
 variable "target_health" {
   type = bool
-  default = true
 }
