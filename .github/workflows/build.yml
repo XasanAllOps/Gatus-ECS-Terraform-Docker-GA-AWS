@@ -31,7 +31,7 @@ jobs:
       
       - name: login to ecr
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v4
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: build docker image
         run: docker build -t gatus:latest ./application
