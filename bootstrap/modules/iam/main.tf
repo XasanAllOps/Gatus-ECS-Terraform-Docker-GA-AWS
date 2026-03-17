@@ -121,6 +121,7 @@ data "aws_iam_policy_document" "infra_policy" {
     effect = "Allow"
     actions = [
       "iam:CreateRole",
+      "iam:CreateServiceLinkedRole",
       "iam:DeleteRole",
       "iam:UpdateAssumeRolePolicy",
       "iam:PutRolePolicy",
@@ -132,6 +133,7 @@ data "aws_iam_policy_document" "infra_policy" {
       "iam:ListInstanceProfilesForRole",
       "iam:ListAttachedRolePolicies",
       "iam:ListRoleTags",
+      "iam:ListRolePolicies",
       "iam:TagRole",
       "iam:UntagRole"
     ]
