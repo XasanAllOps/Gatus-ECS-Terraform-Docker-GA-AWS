@@ -97,3 +97,13 @@ resource "aws_route_table_association" "private" {
   subnet_id      = each.value.id
   route_table_id = aws_route_table.private.id
 }
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.${var.aws_region}.s3"
+  route_table_ids = [aws_route_table.private.id]
+
+  tags = {
+    Name = "(${var.environment}): s3-vpc-endpoint"
+  }
+}
