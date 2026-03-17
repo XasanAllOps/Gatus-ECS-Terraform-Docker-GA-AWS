@@ -37,7 +37,7 @@ jobs:
         run: docker build -t gatus:latest ./application
 
       - name: security test image
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@0.29.0
         with:
           image-ref: gatus:latest
           format: table
