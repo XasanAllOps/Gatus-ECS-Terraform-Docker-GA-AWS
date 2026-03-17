@@ -27,7 +27,7 @@ module "acm" {
 
 module "dns" {
   source        = "../../modules/dns"
-  domain_name = var.domain_name
+  domain_name   = var.domain_name
   target_health = var.target_health
   # -- outputs -- #
   alb_zone_id  = module.alb.alb_zone_id

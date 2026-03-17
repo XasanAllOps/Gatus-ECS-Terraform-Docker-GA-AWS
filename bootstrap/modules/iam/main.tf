@@ -1,13 +1,13 @@
 resource "aws_iam_openid_connect_provider" "github_actions" {
-  url = "https://token.actions.githubusercontent.com"
-  client_id_list = ["sts.amazonaws.com"]
+  url             = "https://token.actions.githubusercontent.com"
+  client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
 }
 
 data "aws_iam_policy_document" "oidc_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
-    effect = "Allow"
+    effect  = "Allow"
 
     principals {
       type        = "Federated"
@@ -15,48 +15,48 @@ data "aws_iam_policy_document" "oidc_assume_role_policy" {
     }
 
     condition {
-      test = "StringEquals"
+      test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:aud"
-      values = ["sts.amazonaws.com"]
+      values   = ["sts.amazonaws.com"]
     }
 
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values = ["repo:${var.github_repo}:ref:refs/heads/${var.github_branch}"]
+      values   = ["repo:${var.github_repo}:ref:refs/heads/${var.github_branch}"]
     }
   }
 }
 
 resource "aws_iam_role" "oidc_role" {
-  name = "${var.environment}-github-actions-oidc-role"
+  name               = "${var.environment}-github-actions-oidc-role"
   assume_role_policy = data.aws_iam_policy_document.oidc_assume_role_policy.json
 }
 
 data "aws_iam_policy_document" "ecr_policy" {
   statement {
-    effect = "Allow"
-    actions = ["ecr:GetAuthorizationToken"]
+    effect    = "Allow"
+    actions   = ["ecr:GetAuthorizationToken"]
     resources = ["*"]
   }
 
   statement {
     effect = "Allow"
     actions = [
-        "ecr:CompleteLayerUpload",
-        "ecr:UploadLayerPart",
-        "ecr:InitiateLayerUpload",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:PutImage",
-        "ecr:BatchGetImage"
+      "ecr:CompleteLayerUpload",
+      "ecr:UploadLayerPart",
+      "ecr:InitiateLayerUpload",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:PutImage",
+      "ecr:BatchGetImage"
     ]
     resources = [var.ecr_repository_arn]
   }
 }
 
 resource "aws_iam_role_policy" "oidc_role_policy" {
-  name = "github-actions-ecr-policy"
-  role = aws_iam_role.oidc_role.id
+  name   = "github-actions-ecr-policy"
+  role   = aws_iam_role.oidc_role.id
   policy = data.aws_iam_policy_document.ecr_policy.json
 }
 
@@ -68,7 +68,27 @@ resource "aws_iam_role" "infra_role" {
 }
 
 data "aws_iam_policy_document" "infra_policy" {
-  
+
+  statement {
+    effect    = "Allow"
+    actions   = ["ecr:GetAuthorizationToken"]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecr:CompleteLayerUpload",
+      "ecr:UploadLayerPart",
+      "ecr:InitiateLayerUpload",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:PutImage",
+      "ecr:BatchGetImage"
+    ]
+    resources = [var.ecr_repository_arn]
+  }
+
+
   statement {
     effect = "Allow"
     actions = [
@@ -77,7 +97,7 @@ data "aws_iam_policy_document" "infra_policy" {
       "s3:PutObject",
       "s3:DeleteObject"
     ]
-    
+
     resources = [
       "arn:aws:s3:::${var.bucket_name}",
       "arn:aws:s3:::${var.bucket_name}/*"
@@ -102,7 +122,7 @@ data "aws_iam_policy_document" "infra_policy" {
     actions = [
       "iam:CreateRole",
       "iam:DeleteRole",
-      "iam:UpdateAssumeRolePolicy", 
+      "iam:UpdateAssumeRolePolicy",
       "iam:PutRolePolicy",
       "iam:DeleteRolePolicy",
       "iam:AttachRolePolicy",
@@ -111,7 +131,7 @@ data "aws_iam_policy_document" "infra_policy" {
       "iam:GetRolePolicy",
       "iam:ListInstanceProfilesForRole",
       "iam:ListAttachedRolePolicies",
-      "iam:ListRoleTags",           
+      "iam:ListRoleTags",
       "iam:TagRole",
       "iam:UntagRole"
     ]
@@ -119,10 +139,10 @@ data "aws_iam_policy_document" "infra_policy" {
   }
 
   statement {
-    effect = "Allow"
-    actions = ["iam:PassRole"]
+    effect    = "Allow"
+    actions   = ["iam:PassRole"]
     resources = ["*"]
-    
+
     condition {
       test     = "StringEquals"
       variable = "iam:PassedToService"
@@ -136,5 +156,3 @@ resource "aws_iam_role_policy" "infra_role_policy" {
   role   = aws_iam_role.infra_role.id
   policy = data.aws_iam_policy_document.infra_policy.json
 }
-
-# 753 615 -57 -50 | 175 100

@@ -5,5 +5,5 @@
 aws_region    = "eu-west-1"
 environment   = "dev"
 bucket_name   = "tf-state-gatus-app"
-github_repo   = "example/testing-123"
+github_repo   = "XasanAllOps/Gatus-ECS-Terraform-Docker-GA-AWS"
 github_branch = "master"
