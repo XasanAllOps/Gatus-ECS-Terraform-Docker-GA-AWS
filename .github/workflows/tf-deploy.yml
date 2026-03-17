@@ -38,7 +38,7 @@ jobs:
 
       - name: login to ecr
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v4
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: terraform setup
         uses: hashicorp/setup-terraform@v4
