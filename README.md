@@ -27,51 +27,6 @@ A containerised application deployment on AWS ECS Fargate, demonstrating tiered 
 * High-Availability & Secure Routing: A Multi-AZ deployment with an Application Load Balancer targeting private subnets, featuring forced HTTP → HTTPS redirection via ACM and custom Route 53 DNS.
 
 ## Terraform Structure
-```
-gatus-ecs-app/
-├── .github/
-│   └── workflows/
-│       ├── build.yml
-│       ├── tf-deploy.yml
-│       └── tf-destroy.yml
-│
-├── application/
-│   ├── Dockerfile
-│   └── config/
-│       └── config.yaml
-│
-├── bootstrap/
-│   ├── main.tf
-│   ├── provider.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   ├── terraform.tfvars
-│   └── modules/
-│       ├── ecr/
-│       ├── s3/
-│       └── iam/
-│
-├── terraform/
-│   ├── environment/
-│   │   └── dev/
-│   │       ├── backend.tf
-│   │       ├── main.tf
-│   │       ├── provider.tf
-│   │       ├── variables.tf
-│   │       ├── outputs.tf
-│   │       └── terraform.tfvars.example
-│   │
-│   └── modules/
-│       ├── acm/
-│       ├── dns/
-│       ├── ecs/
-│       ├── iam/
-│       ├── loadbalancer/
-│       └── network/
-│
-├── README.md
-└── .gitignore
-```
 
 ```
 Gatus-ECS-Terraform-Docker-GA-AWS/
