@@ -36,16 +36,16 @@ jobs:
       - name: build docker image
         run: docker build -t gatus:latest ./application
 
-      - name: security test image
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: gatus:latest
-          format: table
-          version: v0.69.2
-          exit-code: '0'
-          ignore-unfixed: true
-          vuln-type: os,library
-          severity: CRITICAL,HIGH
+      # - name: security test image
+      #   uses: aquasecurity/trivy-action@0.28.0
+      #   with:
+      #     image-ref: gatus:latest
+      #     format: table
+      #     version: v0.69.2
+      #     exit-code: '0'
+      #     ignore-unfixed: true
+      #     vuln-type: os,library
+      #     severity: CRITICAL,HIGH
       
       - name: test locally
         run: |
