@@ -68,10 +68,6 @@ variable "desired_count" {
   type = number
 }
 
-variable "domain_name" {
-  type = string
-}
-
 variable "zone_name" {
   type        = string
   description = "The root domain name of your existing Route 53 Public Hosted Zone"

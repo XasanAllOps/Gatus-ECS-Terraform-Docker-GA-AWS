@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "main" {
-  name = "${var.environment}-gatus-app"
+  name                 = "${var.environment}-gatus-app"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
@@ -15,10 +15,10 @@ resource "aws_ecr_lifecycle_policy" "main" {
       {
         # -- Priority 1: Clean up untagged images
         rulePriority = 1
-        selection    = {
-          tagStatus = "untagged"
-          countType = "sinceImagePushed"
-          countUnit = "days"
+        selection = {
+          tagStatus   = "untagged"
+          countType   = "sinceImagePushed"
+          countUnit   = "days"
           countNumber = 7
         }
         action = {
@@ -28,11 +28,11 @@ resource "aws_ecr_lifecycle_policy" "main" {
       # -- Priority 2: Keep a safe history of tagged images
       {
         rulePriority = 2
-        selection    = {
-          tagStatus = "tagged"
+        selection = {
+          tagStatus     = "tagged"
           tagPrefixList = ["v"]
-          countType = "imageCountMoreThan"
-          countNumber = 10
+          countType     = "imageCountMoreThan"
+          countNumber   = 10
         }
         action = {
           type = "expire"

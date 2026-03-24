@@ -11,18 +11,18 @@ resource "aws_s3_bucket_versioning" "main" {
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "main" {
   bucket = aws_s3_bucket.tf-state-gatus.id
-    rule {
-        apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-        }
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
+  }
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "main" {
   bucket = aws_s3_bucket.tf-state-gatus.id
 
   rule {
-    id = "cleanup-old-versions"
+    id     = "cleanup-old-versions"
     status = "Enabled"
 
     noncurrent_version_expiration {
@@ -32,7 +32,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "main" {
 }
 
 resource "aws_s3_bucket_public_access_block" "main" {
-  bucket = aws_s3_bucket.tf-state-gatus.id
+  bucket                  = aws_s3_bucket.tf-state-gatus.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true

@@ -7,7 +7,7 @@ variable "zone_name" {
 }
 
 variable "validation_method" {
-  type = string
+  type    = string
   default = "DNS"
 }
 

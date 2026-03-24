@@ -3,6 +3,6 @@ variable "environment" {
 }
 
 variable "exec_policy_arn" {
-  type = string
+  type    = string
   default = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }

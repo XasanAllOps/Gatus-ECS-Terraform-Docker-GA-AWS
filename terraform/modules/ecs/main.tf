@@ -36,7 +36,7 @@ resource "aws_ecs_cluster_capacity_providers" "gatus_fargate" {
 }
 
 resource "aws_cloudwatch_log_group" "main" {
-  name = "/ecs/${var.task_family_name}"
+  name              = "/ecs/${var.task_family_name}"
   retention_in_days = var.retention_in_days
 }
 
@@ -47,7 +47,7 @@ resource "aws_ecs_task_definition" "gatus_ecs_task" {
   cpu                      = var.task_level_cpu
   memory                   = var.task_level_memory
   execution_role_arn       = var.ecs_execution_role_arn
-  task_role_arn            = var.ecs_task_role_arn      
+  task_role_arn            = var.ecs_task_role_arn
 
   container_definitions = jsonencode([
     {
@@ -59,7 +59,7 @@ resource "aws_ecs_task_definition" "gatus_ecs_task" {
       portMappings = [
         {
           containerPort = var.container_port
-          hostPort      = var. host_port
+          hostPort      = var.host_port
           protocol      = "tcp"
         }
       ],
@@ -93,8 +93,8 @@ resource "aws_ecs_service" "gatus_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = var.private_subnets
-    security_groups  = [aws_security_group.ecs_service.id]
+    subnets         = var.private_subnets
+    security_groups = [aws_security_group.ecs_service.id]
   }
 
   load_balancer {

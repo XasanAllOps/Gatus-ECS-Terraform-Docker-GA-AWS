@@ -56,7 +56,7 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  for_each = aws_subnet.public
+  for_each       = aws_subnet.public
   subnet_id      = each.value.id
   route_table_id = aws_route_table.public.id
 }
@@ -64,7 +64,7 @@ resource "aws_route_table_association" "public" {
 resource "aws_nat_gateway" "main" {
   availability_mode = "regional"
   vpc_id            = aws_vpc.main.id
-  depends_on = [aws_internet_gateway.main]
+  depends_on        = [aws_internet_gateway.main]
 }
 
 #-- PRIVATE 🟦 🔐 --#
@@ -93,14 +93,14 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route_table_association" "private" {
-  for_each = aws_subnet.private
+  for_each       = aws_subnet.private
   subnet_id      = each.value.id
   route_table_id = aws_route_table.private.id
 }
 
 resource "aws_vpc_endpoint" "s3" {
-  vpc_id       = aws_vpc.main.id
-  service_name = "com.amazonaws.${var.region}.s3"
+  vpc_id          = aws_vpc.main.id
+  service_name    = "com.amazonaws.${var.region}.s3"
   route_table_ids = [aws_route_table.private.id]
 
   tags = {
