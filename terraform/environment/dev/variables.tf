@@ -69,16 +69,16 @@ variable "desired_count" {
 }
 
 variable "domain_name" {
-  type    = string
+  type = string
 }
 
 variable "zone_name" {
-  type    = string
+  type        = string
   description = "The root domain name of your existing Route 53 Public Hosted Zone"
 }
 
 variable "record_name" {
-  type    = string
+  type        = string
   description = "The exact URL where you want the Gatus application to be accessible. This can be the root domain name (example.com) or a subdomain (app.example.com)"
 }
 
