@@ -1,10 +1,10 @@
 data "aws_route53_zone" "main" {
-  name = var.domain_name
+  name = var.zone_name
 }
 
 resource "aws_route53_record" "alb_alias_record" {
   zone_id = data.aws_route53_zone.main.zone_id
-  name = var.domain_name
+  name = var.record_name
   type = "A"
 
   alias {

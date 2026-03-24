@@ -1,11 +1,25 @@
-*.tfstate
-*.tfstate.*
-*.tfvars.*
-**/.terraform/
+# local .terraform directories
 .terraform/*
 terraform/.terraform/*
-.terraform.lock.hcl
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
 .terraform.tfstate.lock.info
+
+# ignore all variable files by default
+ignore all variable files by default
+*.tfvars
+*.tfvars.*
+
+# explicitly allow these files by default
+!terraform.tfvars.example
+!terraform.tfvars
+
+# lock files
+.terraform.lock.hcl
+
+# os/editor files
 .DS_Store
 .vscode/*
 .idea/*

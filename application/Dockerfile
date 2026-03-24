@@ -1,8 +1,8 @@
 FROM golang:1.26.1-alpine AS builder
 
-RUN apk update && apk add --no-cache ca-certificates tzdata
-
-RUN addgroup -S appgroup && adduser -S nonrootuser -G appgroup
+RUN apk update && apk add --no-cache ca-certificates tzdata && \
+    addgroup -S appgroup && \
+    adduser -S nonrootuser -G appgroup
 
 RUN CGO_ENABLED=0 GOOS=linux go install -trimpath -ldflags="-w -s" github.com/TwiN/gatus/v5@v5.22.0
 

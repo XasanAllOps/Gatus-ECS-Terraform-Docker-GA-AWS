@@ -8,7 +8,10 @@ variable "alb_zone_id" {
 }
 
 # -- normal variables -- #
-variable "domain_name" {
+variable "zone_name" {
+  type = string
+}
+variable "record_name" {
   type = string
 }
 

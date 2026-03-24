@@ -3,5 +3,5 @@ output "alb_dns_name" {
 }
 
 output "app_url" {
-  value = "https://${var.domain_name}"
+  value = "https://${var.record_name}"
 }
