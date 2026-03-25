@@ -79,7 +79,7 @@ Gatus-ECS-Terraform-Docker-GA-AWS/
 
 * Replaced expensive Multi-AZ NATs with a single Regional NAT Gateway and an S3 VPC Endpoint to route gigabytes of ECR image pulls over the internal network for free.
 * Utilised ECS Fargate to pay strictly for consumed CPU/Memory, completely eliminating idle EC2 instance waste.
-* Multi-stage scratch Docker builds produce ultra-small application images, slashing ECR storage fees and accelerating deployment times.
+* Multi-stage scratch Docker builds produce ultra-small application images (`35 MB`), slashing ECR storage fees and accelerating deployment times.
 * Implemented Amazon ECR Lifecycle Policies to automatically purge stale and untagged Docker images, preventing unbounded storage growth and reducing baseline AWS costs.
 
 ## Security
@@ -312,3 +312,30 @@ Because the bootstrap layer manages the S3 state bucket and ECR repository used 
 cd terraform/bootstrap
 terraform destroy --auto-approve
 ```
+
+## Images
+
+#### Application Live
+
+![image](./images/health-board.png)
+
+#### GitHub Actions (CI/CD) Workflows
+
+![image](./images/workflows.png)
+
+#### Application Health Check
+
+![image](./images/health-check.png)
+
+
+## Future Improvements
+
+- As the applications scales, to introduce AWS WAF to protect ALB endpoints from common attacks and reduce latency with CDN for edge users.
+
+- Configure an alert system for failed tasks with SNS & auditing and anomaly detection with CloudTrail + GuardDuty.
+
+- Adopt a Git-flow strategy where developers merge and push to the dev branch to trigger automated Terraform workflows in dev. Once verified, merge `dev` into `main`, run workflow and select `staging` workflows. After successful validation in staging, a manual approval gate is required to execute the final terraform apply in the production environment.
+
+- Integrate 3rd party tools like Prometheus and Grafana for observability
+
+- Look into implementing Terragrunt, an open-source wrapper for Terraform designed to keep the codebase DRY and simplifies the management of multi-environment infrastructure. 

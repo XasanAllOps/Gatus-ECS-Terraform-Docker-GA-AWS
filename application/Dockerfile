@@ -1,6 +1,6 @@
 FROM golang:1.26.1-alpine AS builder
 
-RUN apk update && apk add --no-cache ca-certificates tzdata && \
+RUN apk add --no-cache ca-certificates && \
     addgroup -S appgroup && \
     adduser -S nonrootuser -G appgroup
 
@@ -9,7 +9,6 @@ RUN CGO_ENABLED=0 GOOS=linux go install -trimpath -ldflags="-w -s" github.com/Tw
 FROM scratch
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 
