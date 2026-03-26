@@ -313,7 +313,7 @@ cd terraform/bootstrap
 terraform destroy --auto-approve
 ```
 
-### Images
+## Images
 
 #### Live Application
 
@@ -328,7 +328,7 @@ terraform destroy --auto-approve
 ![image](./images/health-check.png)
 
 
-### Future Improvements
+## Future Improvements
 
 As the application scales, I plan to introduce AWS WAF to protect our
 ALB endpoints from common web exploits, and implement a CDN to reduce
