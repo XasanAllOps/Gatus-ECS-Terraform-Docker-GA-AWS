@@ -1,5 +1,3 @@
-# -- normal variables -- #
-
 variable "environment" {
   type = string
 }

@@ -1,4 +1,3 @@
-# -- module (root) related variables -- #
 variable "vpc_id" {
   type = string
 }
@@ -10,7 +9,6 @@ variable "certificate_arn" {
   type = string
 }
 
-# -- normal variables -- #
 variable "alb_security_name" {
   type = string
 }

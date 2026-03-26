@@ -1,6 +1,3 @@
-# -- CHILD NETWORK MODULE 🔑 --
-
-#-- PUBLIC 🟩 🌍 --#
 data "aws_availability_zones" "available" {
   state = "available"
 
@@ -67,7 +64,6 @@ resource "aws_nat_gateway" "main" {
   depends_on        = [aws_internet_gateway.main]
 }
 
-#-- PRIVATE 🟦 🔐 --#
 resource "aws_subnet" "private" {
   for_each          = local.az_mapping
   vpc_id            = aws_vpc.main.id
