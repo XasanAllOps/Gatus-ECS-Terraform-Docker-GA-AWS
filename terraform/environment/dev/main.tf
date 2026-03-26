@@ -11,10 +11,11 @@ module "alb" {
   alb_security_name = var.alb_security_name
   target_group_name = var.target_group_name
   container_port    = var.container_port
-  # -- outputs -- #
+  # -- module dependencies -- #
   vpc_id          = module.vpc.vpc_id
   public_subnets  = module.vpc.public_subnets
   certificate_arn = module.acm.certificate_arn
+  # -- meta-arguments -- #
   depends_on      = [module.vpc]
 }
 
@@ -31,7 +32,7 @@ module "dns" {
   record_name   = var.record_name
   zone_name     = var.zone_name
   target_health = var.target_health
-  # -- outputs -- #
+  # -- module dependencies -- #
   alb_zone_id  = module.alb.alb_zone_id
   alb_dns_name = module.alb.alb_dns_name
 }
@@ -58,12 +59,13 @@ module "ecs" {
   container_port         = var.container_port
   host_port              = var.host_port
   task_cloudwatch_logs   = var.task_cloudwatch_logs
-  # -- outputs -- #
+  # -- module dependencies -- #
   vpc_id                 = module.vpc.vpc_id
   private_subnets        = module.vpc.private_subnets
   target_group_alb_arn   = module.alb.alb_target_group_arn
   alb_security_group     = module.alb.alb_security_group
   ecs_execution_role_arn = module.iam.ecs_execution_role_arn
   ecs_task_role_arn      = module.iam.ecs_task_role_arn
+  # -- meta-arguments -- #
   depends_on             = [module.alb]
 }
