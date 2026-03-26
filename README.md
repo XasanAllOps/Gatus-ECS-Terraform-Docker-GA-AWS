@@ -315,7 +315,7 @@ terraform destroy --auto-approve
 
 ### Images
 
-#### Application Live
+#### Live Application
 
 ![image](./images/health-board.png)
 
