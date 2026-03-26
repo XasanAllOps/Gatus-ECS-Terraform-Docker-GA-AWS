@@ -168,9 +168,11 @@ Modify the values in `terraform.tfvars` to match your setup:
 
 ```bash
 aws_region       = "enter AWS region>"
+environment      = "dev"
 project_name     = "create project name"
 s3_bucket_prefix = "add a prefix"
 github_repo      = "github_username/github_repository"
+github_branch    = "branch_name"
 ```
 
 **4. Deploy the boostrap infrastructure:**
@@ -249,9 +251,7 @@ terraform {
 ```bash
 cp terraform.tfvars.example terraform.tfvars
 ```
-
 Open terraform.tfvars and update the values with your project details
-
 
 **4. Commit and push:**
 

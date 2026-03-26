@@ -1,6 +1,4 @@
 #1. Run `cp terraform.tfvars.example terraform.tfvars`
-#2. Update your values if needed
-#3. If in the future you need to add more sensitive values, add them to this file, it would wise to list this file in .gitignore to avoid accidentally committing sensitive values to version control.
 
 environment            = "dev"
 zone_name              = "xasan.site"
