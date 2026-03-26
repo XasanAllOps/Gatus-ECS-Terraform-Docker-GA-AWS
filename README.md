@@ -10,7 +10,7 @@ This project deploys [Gatus](https://github.com/TwiN/gatus), a developer-oriente
 
 ## Overview
 
-A containerised application deployment on AWS ECS Fargate, demonstrating tiered Infrastructure as Code (IaC) best practices, secure CI/CD automation using short-lived OIDC credentials, and a defence-in-depth security posture. The infrastructure features a multi-AZ VPC, secure HTTPS routing via an Application Load Balancer and ACM, custom Route 53 DNS, and cost-optimised network egress utilising a single Regional NAT Gateway alongside an S3 VPC Endpoint for direct, zero-cost ECR image layer pulls.
+An AWS ECS Fargate deployment demonstrating tiered IaC and secure CI/CD automation via short-lived OIDC credentials. The architecture implements a defence-in-depth posture within a multi-AZ VPC, featuring HTTPS routing via ALB/ACM and custom Route 53 DNS. Efficiency is prioritised through cost-optimised egress, utilising a Regional NAT Gateway for API traffic and an S3 VPC Endpoint to enable zero-cost, high-speed ECR image pulls.
 
 ## Architecture Diagram
 
@@ -18,11 +18,11 @@ A containerised application deployment on AWS ECS Fargate, demonstrating tiered 
 
 ## Key Features
 
-* Decoupled Terraform (IaC): Split into bootstrap and core modules to resolve cyclical dependencies. The bootstrap layer provisions critical prerequisites required to unlock the automated deployment of the core infrastructure.
+* Decouple Terraform (IaC) by splitting infrastructure into Bootstrap and Core modules to resolve circular dependencies. The Bootstrap layer provisions foundational resources (like state buckets and IAM) that are created once and rarely change. This creates a stable base for the Core layer, which handles the frequently updated application infrastructure.
+* Cost-Optimised Egress: Routing heavy ECR image layers through a free S3 VPC Gateway Endpoint eliminates data processing charges, while a single NAT Gateway handles only lightweight API traffic. This decoupled approach ensures high performance for container deployments while significantly reducing infrastructure overhead.
 * Serverless Compute (Fargate): Utilised AWS ECS Fargate to abstract away underlying EC2 infrastructure, eliminating OS patching and operational overhead while enabling seamless scaling.
 * Keyless CI/CD: Automated GitHub Actions workflows driven by secure, short-lived AWS OIDC tokens instead of static access keys.
-* Cost-Optimised Egress: A single NAT Gateway handles lightweight API calls, while a free S3 VPC Endpoint routes heavy ECR image layers to eliminate data charges.
-* Hardened Containers: Multi-stage scratch Docker builds that reduce the application attack surface to near-zero.
+* Container Security: Implementing multi-stage builds and scratch-based images to eliminate unnecessary binaries and libraries. This minimal footprint drastically reduces the application attack surface and improves deployment speed by thinning out image size.
 * Shift-Left Security: Automated pipeline quality gates using Trivy (vulnerability scanning) and Checkov (IaC static analysis).
 * High-Availability & Secure Routing: A Multi-AZ deployment with an Application Load Balancer targeting private subnets, featuring forced HTTP → HTTPS redirection via ACM and custom Route 53 DNS.
 
