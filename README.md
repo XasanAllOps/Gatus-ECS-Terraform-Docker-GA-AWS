@@ -137,12 +137,12 @@ docker build -t gatus-local .
 docker run -d -p 8080:8080 --name gatus-app gatus-local
 ```
 
-**3: Verify the deployment:**
+**3. Verify the deployment:**
 ```bash
 # -- Open your web browser and navigate to http://localhost:8080 to ensure the local Gatus dashboard is active.
 ```
 
-**4: Clean up resources:**
+**4. Clean up resources:**
 ```bash
 # -- Stop and remove local container
 docker stop gatus-app && docker rm gatus-app
@@ -168,8 +168,8 @@ Modify the values in `terraform.tfvars` to match your setup:
 
 ```bash
 aws_region       = "enter AWS region>"
-project_name     = "create project name>"
-s3_bucket_prefix = "add a prefix>"
+project_name     = "create project name"
+s3_bucket_prefix = "add a prefix"
 github_repo      = "github_username/github_repository"
 ```
 
@@ -313,7 +313,7 @@ cd terraform/bootstrap
 terraform destroy --auto-approve
 ```
 
-## Images
+### Images
 
 #### Application Live
 
@@ -328,14 +328,27 @@ terraform destroy --auto-approve
 ![image](./images/health-check.png)
 
 
-## Future Improvements
+### Future Improvements
 
-- As the applications scales, to introduce AWS WAF to protect ALB endpoints from common attacks and reduce latency with CDN for edge users.
+As the application scales, I plan to introduce AWS WAF to protect our
+ALB endpoints from common web exploits, and implement a CDN to reduce
+latency for edge users.
 
-- Configure an alert system for failed tasks with SNS & auditing and anomaly detection with CloudTrail + GuardDuty.
+For operational security and monitoring, I will look to configure an
+automated alert system via AWS SNS for failed ECS tasks. This will be
+paired with continuous auditing and anomaly detection using AWS
+CloudTrail and Amazon GuardDuty.
 
-- Adopt a Git-flow strategy where developers merge and push to the dev branch to trigger automated Terraform workflows in dev. Once verified, merge `dev` into `main`, run workflow and select `staging` workflows. After successful validation in staging, a manual approval gate is required to execute the final terraform apply in the production environment.
+The goal is to adopt a strict Git-flow strategy. Developers will push
+and merge into the `dev` branch to automatically trigger Terraform
+workflows in the development environment. Once verified, `dev` will be
+merged into `main` to initiate the staging workflows. After successful
+validation in staging, a manual approval gate will be strictly
+enforced before executing the final `terraform apply` in the production
+environment.
 
-- Integrate 3rd party tools like Prometheus and Grafana for observability
+To enhance our observability capabilities, I'll integrate
+third-party monitoring tools such as Prometheus and Grafana.
 
-- Look into implementing Terragrunt, an open-source wrapper for Terraform designed to keep the codebase DRY and simplifies the management of multi-environment infrastructure. 
+Finally, I plan to evaluate Terragrunt—an open-source wrapper for
+Terraform which is designed to keep the infrastructure codebase DRY and simplify the management of multi-environment deployments.
