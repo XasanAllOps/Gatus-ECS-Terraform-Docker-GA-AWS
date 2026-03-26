@@ -103,7 +103,7 @@ Before deploying this infrastructure, ensure you have the following:
 
 - GitHub Account: To host the repository and run OIDC-driven pipelines.
 
-- Public Domain: A registered domain managed via Route 53 (or an external provider) to support the ALB’s HTTPS listener and ACM certificate.
+- Public Domain: A registered domain managed via Route 53 to support the ALB’s HTTPS listener and ACM certificate.
 
 ## Deployment Guide
 
@@ -352,3 +352,7 @@ third-party monitoring tools such as Prometheus and Grafana.
 
 Finally, I plan to evaluate Terragrunt—an open-source wrapper for
 Terraform which is designed to keep the infrastructure codebase DRY and simplify the management of multi-environment deployments.
+
+## Author
+
+[Leeban Xasan](https://www.linkedin.com/in/l-xasan/) 🙋🏽‍♂️
